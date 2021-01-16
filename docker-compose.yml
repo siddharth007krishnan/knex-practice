@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql:8.0
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: knex
+      MYSQL_DATABASE: knex_practice
+      MYSQL_USER: knex_user
+      MYSQL_PASSWORD: knex
+
+    ports: 
+      - 3306:3306
+
+volumes:
+  db_data: {}
