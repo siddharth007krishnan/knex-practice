@@ -18,7 +18,8 @@ describe('Tasks tests', () => {
     }
     await knex('tasks').insert(task)
     const checkResult = await knex.select('*').from('tasks')
-    console.log(checkResult)
+    expect(checkResult[0].name).toStrictEqual(task.name)
+    expect(checkResult[0].description).toStrictEqual(task.description)
 
   })
 
