@@ -23,6 +23,40 @@ describe('Tasks tests', () => {
 
   })
 
+  it('should update a new task by updating its dueDate', async () => {
+    const task = {
+      name: 'Learn MYSQL',
+      description: 'Get better at mysql to improve skill',
+      dueDate: '2021-11-11',
+      completed: false,
+    }
+    await knex('tasks').insert(task)
+    const { id } = await knex.select('id').from('tasks').where('dueDate', '=', task.dueDate).first()
+    const saved = await knex.select('*').from('tasks').first()
+    const patchedTask = {
+      dueDate: '2021-11-14',
+    }
+    await knex('tasks').where('id', '=', id).update(patchedTask)
+    const result = await knex.select('*').from('tasks').where('id', '=', id).first()
+    expect(result.id).toStrictEqual(id) 
+  })
+
+  it('should delete a new task by soft deleting it', async () => {
+    const task = {
+      name: 'Learn MYSQL',
+      description: 'Get better at mysql to improve skill',
+      dueDate: '2021-11-11',
+      completed: false,
+    }
+    await knex('tasks').insert(task)
+    const { id } = await knex.select('id').from('tasks').where('dueDate', '=', task.dueDate).first()
+    await knex('tasks').where('id', '=', id).update({ 
+      deletedAt: knex.fn.now()
+    })
+    const result = await knex.select('*').from('tasks').where('id', '=', id).first()
+    expect(Boolean(result.deletedAt)).toStrictEqual(true)
+  })
+
   afterEach(async (done) => {
     await knex.migrate.rollback(TEST_DB_CONFIG, true)
     console.log("Destroying knex connection");
