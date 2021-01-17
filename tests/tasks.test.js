@@ -10,14 +10,22 @@ describe('Tasks tests', () => {
   })
 
   it('should create a new task', async () => {
-    console.log(knex)
+    const task = {
+      name: 'Learn MYSQL',
+      description: 'Get better at mysql to improve skill',
+      dueDate: '2021-11-11',
+      completed: false,
+    }
+    await knex('tasks').insert(task)
+    const checkResult = await knex.select('*').from('tasks')
+    console.log(checkResult)
+
   })
 
   afterEach(async (done) => {
-    await knex.migrate.rollback(TEST_DB_CONFIG)
+    await knex.migrate.rollback(TEST_DB_CONFIG, true)
     console.log("Destroying knex connection");
     await knex.destroy()
     done()
-    console.log(knex)
   })
 })
