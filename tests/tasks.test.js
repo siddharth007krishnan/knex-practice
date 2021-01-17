@@ -10,7 +10,12 @@ describe('Tasks tests', () => {
   })
 
   it('should create a new task', async () => {
-    console.log(knex)
+    const task = {
+      name: 'Learn MYSQL',
+      description: 'Get better at mysql to improve skill',
+      dueDate: '2021-11-11',
+      completed: false,
+    }
   })
 
   afterEach(async (done) => {
