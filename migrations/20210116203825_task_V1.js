@@ -9,8 +9,8 @@ exports.up = function (knex) {
         table.text('description', 'mediumtext');
         table.date('dueDate');
         table.boolean('completed');
-        table.datetime('createdAt').defaultTo(knex.fn.now());
-        table.datetime('updatedAt').defaultTo(knex.fn.now());
+        table.datetime('createdAt').notNullable().defaultTo(knex.fn.now());
+        table.datetime('updatedAt').notNullable().defaultTo(knex.fn.now('CURRENT TIMESTAMP ON UPDATE CURRENT TIMESTAMP'));
         table.datetime('deletedAt');
       });
     }

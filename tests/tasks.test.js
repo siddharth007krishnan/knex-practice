@@ -57,6 +57,24 @@ describe('Tasks tests', () => {
     expect(Boolean(result.deletedAt)).toStrictEqual(true)
   })
 
+  it('should ignore all soft deleted records while fetching them', async () => {
+    const task = {
+      name: 'Learn about transactions',
+      description: 'Get better at handling transactions',
+      dueDate: '2021-11-13',
+      completed: false,
+    }
+    await knex('tasks').insert(task)
+    const { id, name } = await knex.select('*').from('tasks').whereNull('deletedAt').first()
+    expect(name).toStrictEqual(task.name)
+    await knex('tasks').where('id', '=', id).update({ deletedAt: knex.fn.now() })
+    const result = await knex.select('*').from('tasks').whereNull('deletedAt').first()
+    const temp = await knex.select('*').from('tasks').where('id', '=', id)
+    console.log({ temp })
+    expect(temp.updatedAt).toStrictEqual(temp.deletedAt)
+    expect(result).toBe(undefined)
+  })
+
   afterEach(async (done) => {
     await knex.migrate.rollback(TEST_DB_CONFIG, true)
     console.log("Destroying knex connection");
